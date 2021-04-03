@@ -1,11 +1,9 @@
 # About
 
-Simple template for Rust repository.
+Simple CLI for Slack.
 
 # Getting Started
 
 ```bash
-git clone git@github.com:YOURNAME/NEW-REPOSITORY-NAME.git
-cd NEW-REPOSITORY-NAME
-make
+cargo install --git https://github.com/mass10/rslack-command --branch main
 ```
