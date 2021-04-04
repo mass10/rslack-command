@@ -11,7 +11,7 @@ cargo install --git https://github.com/mass10/rslack-command --branch main
 
 # settings.toml
 
-```TMOL
+```TOML
 [task01]
 access_token = "xoxb-xxxxxxxxxxxx-xxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxx"
 channel = "notifications"
