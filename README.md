@@ -8,6 +8,11 @@ Simple CLI for Slack.
 cargo install --git https://github.com/mass10/rslack-command --branch main
 ```
 
+# To run
+
+```bash
+rslack-command "NAME_OF_TASK_IN_TOML"
+```
 
 # settings.toml
 
