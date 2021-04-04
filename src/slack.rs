@@ -1,29 +1,29 @@
 extern crate reqwest;
 
-/// ファイル、あるいはディレクトリーの名前部分を返します。
+/// Returns the name of a file.
 ///
 /// ### Arguments
-/// * `path` ファイルのパス
+/// * `path` Path to file.
 ///
 /// ### Returns
-/// ファイル名
+/// File name.
 pub fn get_file_name(path: &str) -> String {
 	let file = std::path::Path::new(path);
 	return file.file_name().unwrap().to_str().unwrap().to_string();
 }
 
 ///
-/// アプリケーション
+/// Slack client.
 ///
 pub struct SlackClient {
 	access_token: String,
 }
 
 impl SlackClient {
-	/// アプリケーションのインスタンスを返します。
+	/// Returns A new instance of
 	///
 	/// ### Returns
-	/// `SlackClient` の新しいインスタンス
+	/// A new instance of `SlackClient`.
 	pub fn new(access_token: &str) -> std::result::Result<SlackClient, Box<dyn std::error::Error>> {
 		let app = SlackClient {
 			access_token: access_token.to_string(),
@@ -31,25 +31,24 @@ impl SlackClient {
 		return Ok(app);
 	}
 
-	/// テキストメッセージを投稿します。
+	/// Post text message.
 	///
 	/// ### Arguments
-	/// * `channel` チャネル
-	/// * `text` コメント
+	/// * `channel` channel.
+	/// * `text` text message.
 	pub fn post_text(&mut self, channel: &str, text: &str) -> std::result::Result<(), Box<dyn std::error::Error>> {
 		// multipart/form-data を作成
 		let form = reqwest::multipart::Form::new()
-			// テキストメッセージ
+			// text message
 			.text("text", text.to_string())
-			// チャネル
+			// channel
 			.text("channel", channel.to_string());
 
 		// リクエスト送信
 		let access_token_header = format!("Bearer {}", self.access_token);
 		let client = reqwest::Client::new();
-		let url = "https://slack.com/api/chat.postMessage";
 		let mut response = client
-			.post(url)
+			.post("https://slack.com/api/chat.postMessage")
 			.header("Content-Type", "multipart/form-data")
 			.header("Authorization", access_token_header)
 			.multipart(form)
@@ -57,48 +56,41 @@ impl SlackClient {
 
 		// 応答
 		let content = response.text()?;
-		println!("{}", content);
 
-		// JSON を分解してフィールドを読み取る場合
-		if true {
-			let value = serde_json::from_str::<serde_json::Value>(content.as_str())?;
-			println!("[TRACE] {}", value);
-			println!("[TRACE] {}", value["error"].as_str().unwrap_or_default());
-			println!("[TRACE] {:?}", value["ok"]);
-			println!("[TRACE] {:?}", value["response_metadata"]);
-		}
+		// Parse JSON and print human readable text.
+		let value = serde_json::from_str::<serde_json::Value>(content.as_str())?;
+		let str = serde_json::to_string_pretty(&value)?;
+		println!("{}", str);
 
 		return Ok(());
 	}
 
-	/// コメントを付けてファイルを投稿します。
+	/// Post text message with file.
 	///
 	/// ### Arguments
-	/// * `channel` チャネル
-	/// * `text` コメント
-	/// * `path` ファイルへのパス
-	/// * `file_name` ファイルの表示名(省略時はファイル名が採用されます)
+	/// * `channel` channel to post.
+	/// * `text` text message.
+	/// * `path` path to file.
+	/// * `file_name` title of file.
 	pub fn upload_file(&mut self, channel: &str, text: &str, path: &str, file_name: &str) -> std::result::Result<(), Box<dyn std::error::Error>> {
-		// コンフィギュレーション
-		let file_name = if file_name != "" { file_name.to_string() } else { get_file_name(path) };
+		// title of file.
+		let file_title = if file_name != "" { file_name.to_string() } else { get_file_name(path) };
 
 		// multipart/form-data を作成
 		let form = reqwest::multipart::Form::new()
-			// テキスト
+			// text message
 			.text("initial_comment", text.to_string())
-			// チャネル
+			// channel
 			.text("channels", channel.to_string())
-			// ファイルタイトル
-			.text("title", file_name.clone())
-			// ファイル
+			// file title
+			.text("title", file_title.clone())
+			// path to file
 			.file("file", path)?;
 
-		// リクエスト送信
 		let access_token_header = format!("Bearer {}", self.access_token);
 		let client = reqwest::Client::new();
-		let url = "https://slack.com/api/files.upload";
 		let mut response = client
-			.post(url)
+			.post("https://slack.com/api/files.upload")
 			.header("Content-Type", "multipart/form-data")
 			.header("Authorization", access_token_header)
 			.multipart(form)
@@ -106,16 +98,11 @@ impl SlackClient {
 
 		// 応答
 		let content = response.text()?;
-		println!("{}", content);
 
-		// JSON を分解してフィールドを読み取る場合
-		if true {
-			let value = serde_json::from_str::<serde_json::Value>(content.as_str())?;
-			println!("[TRACE] {}", value);
-			println!("[TRACE] {}", value["error"].as_str().unwrap_or_default());
-			println!("[TRACE] {:?}", value["ok"]);
-			println!("[TRACE] {:?}", value["response_metadata"]);
-		}
+		// Parse JSON and print human readable text.
+		let value = serde_json::from_str::<serde_json::Value>(content.as_str())?;
+		let str = serde_json::to_string_pretty(&value)?;
+		println!("{}", str);
 
 		return Ok(());
 	}

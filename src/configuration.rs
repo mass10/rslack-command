@@ -2,7 +2,10 @@ use super::functions;
 
 type ConfigurationSettingsMap = std::collections::BTreeMap<String, SettingSection>;
 
-/// TOML ファイルを解析します。
+/// Parse TOML file.
+///
+/// ### Arguments.
+/// `path` path to file.
 fn read_toml_file(path: &str) -> std::result::Result<ConfigurationSettingsMap, Box<dyn std::error::Error>> {
 	extern crate toml;
 	let content = functions::read_text_file_all(path)?;
@@ -19,7 +22,9 @@ pub struct SettingSection {
 	pub file_title: Option<String>,
 }
 
-/// コンフィギュレーション構造体
+///
+/// Configuration settings.
+///
 #[derive(serde_derive::Deserialize, std::fmt::Debug)]
 pub struct ConfigurationSettings {
 	settings: ConfigurationSettingsMap,
@@ -32,7 +37,7 @@ impl ConfigurationSettings {
 			settings: ConfigurationSettingsMap::new(),
 		};
 		instance.configure_default("")?;
-		instance.configure()?;
+		instance.configure_envs()?;
 		return Ok(instance);
 	}
 
@@ -46,22 +51,25 @@ impl ConfigurationSettings {
 		return self.settings.get(name);
 	}
 
-	/// コンフィギュレーションを行います。
+	/// default configuration.
+	///
+	/// ### Arguments.
+	/// `path` path to `settings.toml`.
 	fn configure_default(&mut self, path: &str) -> std::result::Result<(), Box<dyn std::error::Error>> {
-		// TOML ファイル読み込み
+		// Reading TOML.
 		let path = if path == "" { "settings.toml" } else { path };
 		self.settings = read_toml_file(path)?;
 		return Ok(());
 	}
 
-	fn configure(&self) -> std::result::Result<(), Box<dyn std::error::Error>> {
+	/// Configuration with environment variables.
+	fn configure_envs(&self) -> std::result::Result<(), Box<dyn std::error::Error>> {
 		return Ok(());
 	}
 }
 
-/// [std::fmt::Display] としての振る舞いを実装します。
 impl std::fmt::Display for ConfigurationSettings {
-	/// 規定の操作をインプリメントします。
+	/// Implements default behavior as [std::fmt::Display].
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
 		return write!(f, "");
 	}
