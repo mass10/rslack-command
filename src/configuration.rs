@@ -1,12 +1,12 @@
-// use super::application_error;
-
 use super::functions;
 
+type ConfigurationSettingsMap = std::collections::BTreeMap<String, SettingSection>;
+
 /// TOML ファイルを解析します。
-fn read_toml_file(path: &str) -> std::result::Result<std::collections::HashMap<String, SettingSection>, Box<dyn std::error::Error>> {
+fn read_toml_file(path: &str) -> std::result::Result<ConfigurationSettingsMap, Box<dyn std::error::Error>> {
 	extern crate toml;
 	let content = functions::read_text_file_all(path)?;
-	let conf: std::collections::HashMap<String, SettingSection> = toml::from_str(&content)?;
+	let conf: ConfigurationSettingsMap = toml::from_str(&content)?;
 	return Ok(conf);
 }
 
@@ -22,42 +22,35 @@ pub struct SettingSection {
 /// コンフィギュレーション構造体
 #[derive(serde_derive::Deserialize, std::fmt::Debug)]
 pub struct ConfigurationSettings {
-	settings: std::collections::HashMap<String, SettingSection>,
+	settings: ConfigurationSettingsMap,
 }
 
 impl ConfigurationSettings {
 	/// 新しいインスタンスを返します。
 	pub fn new() -> std::result::Result<ConfigurationSettings, Box<dyn std::error::Error>> {
 		let mut instance = ConfigurationSettings {
-			settings: std::collections::HashMap::<String, SettingSection>::new(),
+			settings: ConfigurationSettingsMap::new(),
 		};
 		instance.configure_default("")?;
 		instance.configure()?;
 		return Ok(instance);
 	}
 
-	pub fn get_task(&self, required_task: &str) -> Option<&SettingSection> {
-		for (key, vars) in &self.settings {
-			if key == required_task {
-				return Some(vars);
+	/// Find task. Returns the only task when no name was given.
+	pub fn get_task(&self, name: &str) -> Option<&SettingSection> {
+		if name == "" && self.settings.len() == 1 {
+			for (_, value) in &self.settings {
+				return Some(&value);
 			}
 		}
-		return None;
+		return self.settings.get(name);
 	}
 
 	/// コンフィギュレーションを行います。
 	fn configure_default(&mut self, path: &str) -> std::result::Result<(), Box<dyn std::error::Error>> {
 		// TOML ファイル読み込み
 		let path = if path == "" { "settings.toml" } else { path };
-		let conf = read_toml_file(path)?;
-
-		for (section, vars) in &conf {
-			println!("[TRACE] {}", &section);
-			println!("[TRACE] {:?}", vars);
-		}
-
-		self.settings = conf;
-
+		self.settings = read_toml_file(path)?;
 		return Ok(());
 	}
 

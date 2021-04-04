@@ -38,11 +38,11 @@ impl SlackClient {
 	/// * `text` コメント
 	pub fn post_text(&mut self, channel: &str, text: &str) -> std::result::Result<(), Box<dyn std::error::Error>> {
 		// multipart/form-data を作成
-		let form = reqwest::multipart::Form::new();
-		// テキストメッセージ
-		let form = form.text("text", text.to_string());
-		// チャネル
-		let form = form.text("channel", channel.to_string());
+		let form = reqwest::multipart::Form::new()
+			// テキストメッセージ
+			.text("text", text.to_string())
+			// チャネル
+			.text("channel", channel.to_string());
 
 		// リクエスト送信
 		let access_token_header = format!("Bearer {}", self.access_token);

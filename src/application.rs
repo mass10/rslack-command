@@ -5,20 +5,23 @@ use super::slack;
 pub struct Application;
 
 impl Application {
-	/// 新しいインスタンスを返します。
-	pub fn new() -> std::result::Result<Application, std::boxed::Box<dyn std::error::Error>> {
+	/// Returns a new instance of `Application`
+	///
+	/// ### Returns
+	/// Returns a new instance of `Application`
+	pub fn new() -> std::result::Result<Application, Box<dyn std::error::Error>> {
 		return Ok(Application {});
 	}
 
-	/// アプリケーションを実行します。
-	pub fn run(&self, task_name: &str) -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
-		// コンフィギュレーション
+	/// Run application.
+	pub fn run(&self, task_name: &str) -> std::result::Result<(), Box<dyn std::error::Error>> {
+		// Configuration
 		let conf = configuration::ConfigurationSettings::new()?;
 
-		// タスクを検索
+		// Find task.
 		let task = conf.get_task(task_name);
 		if task.is_none() {
-			println!("[WARN] タスク {} が定義されていません。", task_name);
+			println!("[WARN] タスク [{}] が定義されていません。", task_name);
 			return Ok(());
 		}
 		let vars = task.unwrap();
