@@ -7,6 +7,7 @@ pub struct ApplicationError {
 
 impl ApplicationError {
 	/// 新しいインスタンスを返します。
+	#[allow(unused)]
 	pub fn new(description: &str) -> ApplicationError {
 		return ApplicationError { description: description.to_string() };
 	}
