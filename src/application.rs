@@ -23,7 +23,7 @@ impl Application {
 		// Find task.
 		let task = conf.get_task(task_name);
 		if task.is_none() {
-			println!("[ERROR] No such task [{}] defined.", task_name);
+			println!("No such task [{}] defined.", task_name);
 			return Ok(());
 		}
 		let vars = task.unwrap();
