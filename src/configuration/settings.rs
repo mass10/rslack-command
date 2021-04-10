@@ -52,11 +52,20 @@ impl ConfigurationSettings {
 	/// Find task. Returns the only task when no name was given.
 	pub fn get_task(&self, name: &str) -> Option<&SettingSection> {
 		if name == "" && self.settings.len() == 1 {
-			for (_, value) in &self.settings {
-				return Some(&value);
-			}
+			return self.get_first_task();
 		}
 		return self.settings.get(name);
+	}
+
+	/// Returns the first task.
+	///
+	/// ### Remarks
+	/// Item order is not guaranteed.
+	fn get_first_task(&self) -> Option<&SettingSection> {
+		for (_, value) in &self.settings {
+			return Some(&value);
+		}
+		return None;
 	}
 
 	/// default configuration.
