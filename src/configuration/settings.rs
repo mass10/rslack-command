@@ -1,4 +1,4 @@
-use super::functions;
+use super::super::util::functions;
 
 type ConfigurationSettingsMap = std::collections::BTreeMap<String, SettingSection>;
 
@@ -13,6 +13,14 @@ fn read_toml_file(path: &str) -> std::result::Result<ConfigurationSettingsMap, B
 	return Ok(conf);
 }
 
+/// Definitions of each section.
+///
+/// ### Definition
+/// * `access_token`
+/// * `channel`
+/// * `text`
+/// * `file`
+/// * `file_title`
 #[derive(serde_derive::Deserialize, std::fmt::Debug)]
 pub struct SettingSection {
 	pub access_token: Option<String>,
