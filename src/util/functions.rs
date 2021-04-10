@@ -1,7 +1,5 @@
 extern crate chrono;
 
-// use super::application_error;
-
 /// Return system timestamp
 ///
 /// ### Returns
