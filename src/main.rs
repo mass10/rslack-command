@@ -1,8 +1,7 @@
 mod application;
-mod application_error;
 mod configuration;
-mod functions;
-mod slack;
+mod services;
+mod util;
 
 ///
 /// Starting configuration
@@ -51,7 +50,7 @@ impl StartConfigurationSettings {
 				return Err("show version".to_string());
 			}
 			if e.starts_with("--file=") || e.starts_with("-f=") {
-				let (_, value) = functions::split_string(&e, "=");
+				let (_, value) = util::functions::split_string(&e, "=");
 				if value == "" {
 					return Err("show usage".to_string());
 				}
@@ -101,14 +100,14 @@ impl StartConfigurationSettings {
 		if result.is_err() {
 			println!("{}", result.err().unwrap());
 			println!("{}", getopt.usage(""));
-			return Err(Box::new(application_error::ApplicationError::new("")));
+			return Err(Box::new(application::errors::ApplicationError::new("")));
 		}
 		let result = result.unwrap();
 
 		// help
 		if result.opt_present("help") {
 			println!("{}", getopt.usage(""));
-			return Err(Box::new(application_error::ApplicationError::new("")));
+			return Err(Box::new(application::errors::ApplicationError::new("")));
 		}
 
 		// server
@@ -160,7 +159,7 @@ fn main() {
 	let conf = result.unwrap();
 
 	// Initialize an instance of Application.
-	let result = application::Application::new();
+	let result = application::core::Application::new();
 	if result.is_err() {
 		println!("[ERROR] {}", result.err().unwrap());
 		return;
