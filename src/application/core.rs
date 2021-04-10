@@ -1,5 +1,5 @@
-use super::configuration;
-use super::slack;
+use super::super::configuration::settings;
+use super::super::services::slack;
 
 ///
 /// Application.
@@ -18,7 +18,7 @@ impl Application {
 	/// Run application.
 	pub fn run(&self, task_name: &str) -> std::result::Result<(), Box<dyn std::error::Error>> {
 		// Configuration
-		let conf = configuration::ConfigurationSettings::new()?;
+		let conf = settings::ConfigurationSettings::new()?;
 
 		// Find task.
 		let task = conf.get_task(task_name);
