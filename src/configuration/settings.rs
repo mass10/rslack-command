@@ -1,3 +1,7 @@
+//!
+//! Settings
+//!
+
 use super::super::util::functions;
 
 type ConfigurationSettingsMap = std::collections::BTreeMap<String, SettingSection>;

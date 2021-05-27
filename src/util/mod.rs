@@ -1,1 +1,5 @@
+//!
+//! Utilities.
+//!
+
 pub mod functions;

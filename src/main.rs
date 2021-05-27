@@ -1,3 +1,7 @@
+//!
+//! Application entrypoint.
+//!
+
 mod application;
 mod configuration;
 mod services;
