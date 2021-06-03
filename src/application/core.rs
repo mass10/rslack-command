@@ -16,6 +16,9 @@ impl Application {
 	}
 
 	/// Run application.
+	///
+	/// ### Arguments
+	/// `task_name` Task name to launch.
 	pub fn run(&self, task_name: &str) -> std::result::Result<(), Box<dyn std::error::Error>> {
 		// Configuration
 		let conf = settings::ConfigurationSettings::new()?;
