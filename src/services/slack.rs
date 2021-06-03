@@ -1,3 +1,7 @@
+//!
+//! Operations for Slack.
+//!
+
 extern crate reqwest;
 
 /// Returns the name of a file.

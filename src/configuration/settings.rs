@@ -20,17 +20,22 @@ fn read_toml_file(path: &str) -> std::result::Result<ConfigurationSettingsMap, B
 /// Definitions of each section.
 ///
 /// ### Definition
-/// * `access_token`
-/// * `channel`
-/// * `text`
-/// * `file`
-/// * `file_title`
+/// * `access_token` Slack access token.
+/// * `channel` Channel name to post.
+/// * `text` Text message.
+/// * `file` Path to file to post.
+/// * `file_title` Caption of file.
 #[derive(serde_derive::Deserialize, std::fmt::Debug)]
 pub struct SettingSection {
+	/// Slack access token.
 	pub access_token: Option<String>,
+	/// Channel name to post.
 	pub channel: Option<String>,
+	/// Text message.
 	pub text: Option<String>,
+	/// Path to file to post.
 	pub file: Option<String>,
+	/// Caption of file.
 	pub file_title: Option<String>,
 }
 
@@ -39,6 +44,7 @@ pub struct SettingSection {
 ///
 #[derive(serde_derive::Deserialize, std::fmt::Debug)]
 pub struct ConfigurationSettings {
+	/// settings.
 	settings: ConfigurationSettingsMap,
 }
 
@@ -54,6 +60,9 @@ impl ConfigurationSettings {
 	}
 
 	/// Find task. Returns the only task when no name was given.
+	///
+	/// ### Arguments
+	/// `name` Task name.
 	pub fn get_task(&self, name: &str) -> Option<&SettingSection> {
 		if name == "" && self.settings.len() == 1 {
 			return self.get_first_task();

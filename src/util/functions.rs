@@ -1,3 +1,7 @@
+//!
+//! Common operations.
+//!
+
 extern crate chrono;
 
 /// Return system timestamp
