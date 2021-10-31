@@ -91,6 +91,7 @@ impl SlackClient {
 			// path to file
 			.file("file", path)?;
 
+		// リクエスト送信
 		let access_token_header = format!("Bearer {}", self.access_token);
 		let client = reqwest::Client::new();
 		let mut response = client

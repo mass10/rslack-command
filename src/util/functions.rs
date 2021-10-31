@@ -6,7 +6,7 @@ extern crate chrono;
 
 /// Return system timestamp
 ///
-/// ### Returns
+/// # Returns
 /// Timestamp as `String`
 #[allow(unused)]
 pub fn get_timestamp() -> String {
@@ -16,7 +16,7 @@ pub fn get_timestamp() -> String {
 
 /// Retrieve the whole content of file
 ///
-/// ### Returns
+/// # Returns
 /// Entire content of file as `String`
 pub fn read_text_file_all(path: &str) -> std::result::Result<String, Box<dyn std::error::Error>> {
 	use std::io::Read;
@@ -29,7 +29,10 @@ pub fn read_text_file_all(path: &str) -> std::result::Result<String, Box<dyn std
 
 /// Split string at the first separator
 ///
-/// ### Returns
+/// # Arguments
+/// * `s` - String to split
+/// * `separator` - Separator to split at
+/// # Returns
 /// The left part and the latter
 pub fn split_string(s: &str, separator: &str) -> (String, String) {
 	let position = s.find(separator);
