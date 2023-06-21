@@ -34,6 +34,7 @@ pub fn read_text_file_all(path: &str) -> std::result::Result<String, Box<dyn std
 /// * `separator` - Separator to split at
 /// # Returns
 /// The left part and the latter
+#[allow(unused)]
 pub fn split_string(s: &str, separator: &str) -> (String, String) {
 	let position = s.find(separator);
 	if position.is_none() {
