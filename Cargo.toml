@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 getopts = "*"
-reqwest = "0.9.0"
+reqwest = { version = "*", features = ["blocking", "multipart"] }
 serde_json = "*"
 serde_derive = "*"
 serde = "*"
