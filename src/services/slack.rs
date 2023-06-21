@@ -42,7 +42,7 @@ impl SlackClient {
 	/// * `text` text message.
 	pub fn post_text(&mut self, channel: &str, text: &str) -> std::result::Result<(), Box<dyn std::error::Error>> {
 		// multipart/form-data を作成
-		let form = reqwest::multipart::Form::new()
+		let form = reqwest::blocking::multipart::Form::new()
 			// text message
 			.text("text", text.to_string())
 			// channel
@@ -50,8 +50,8 @@ impl SlackClient {
 
 		// リクエスト送信
 		let access_token_header = format!("Bearer {}", self.access_token);
-		let client = reqwest::Client::new();
-		let mut response = client
+		let client = reqwest::blocking::Client::new();
+		let response = client
 			.post("https://slack.com/api/chat.postMessage")
 			.header("Content-Type", "multipart/form-data")
 			.header("Authorization", access_token_header)
@@ -81,7 +81,7 @@ impl SlackClient {
 		let file_title = if file_name != "" { file_name.to_string() } else { get_file_name(path) };
 
 		// multipart/form-data を作成
-		let form = reqwest::multipart::Form::new()
+		let form = reqwest::blocking::multipart::Form::new()
 			// text message
 			.text("initial_comment", text.to_string())
 			// channel
@@ -93,8 +93,8 @@ impl SlackClient {
 
 		// リクエスト送信
 		let access_token_header = format!("Bearer {}", self.access_token);
-		let client = reqwest::Client::new();
-		let mut response = client
+		let client = reqwest::blocking::Client::new();
+		let response = client
 			.post("https://slack.com/api/files.upload")
 			.header("Content-Type", "multipart/form-data")
 			.header("Authorization", access_token_header)
