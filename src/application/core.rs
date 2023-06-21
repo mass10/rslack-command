@@ -31,7 +31,7 @@ impl Application {
 		}
 		let task = task.unwrap();
 
-		let access_token = task.access_token.clone().unwrap_or_default();
+		let access_token = task.access_token.clone();
 
 		// Initialize the application instance.
 		let mut slack = slack::SlackClient::new(&access_token)?;
@@ -39,15 +39,11 @@ impl Application {
 		if task.file.is_some() {
 			// Post text message with file.
 			let file = task.file.clone().unwrap_or_default();
-			let channel = task.channel.clone().unwrap_or_default();
-			let text = task.text.clone().unwrap_or_default();
 			let file_title = task.file_title.clone().unwrap_or_default();
-			slack.upload_file(&channel, &text, &file, &file_title)?;
+			slack.upload_file(&task.channel, &task.text, &file, &file_title)?;
 		} else {
 			// Post text message.
-			let channel = task.channel.clone().unwrap_or_default();
-			let text = task.text.clone().unwrap_or_default();
-			slack.post_text(&channel, &text)?;
+			slack.post_text(&task.channel, &task.text)?;
 		}
 
 		return Ok(());
