@@ -31,32 +31,19 @@ fn read_toml_file(path: &str) -> std::result::Result<ConfigurationSettingsMap, B
 #[derive(serde_derive::Deserialize, std::fmt::Debug)]
 pub struct SettingSection {
 	/// Slack access token.
-	pub access_token: Option<String>,
+	pub access_token: String,
 
 	/// Channel name to post.
-	pub channel: Option<String>,
+	pub channel: String,
 
 	/// Text message.
-	pub text: Option<String>,
+	pub text: String,
 
 	/// Path to file to post.
 	pub file: Option<String>,
 
 	/// Caption of file.
 	pub file_title: Option<String>,
-
-	empty_string: String,
-}
-
-impl SettingSection {
-	#[allow(unused)]
-	pub fn get_access_token(&self) -> &String {
-		if self.access_token.is_none() {
-			return &self.empty_string;
-		}
-		let result = self.access_token.as_ref().unwrap();
-		return result;
-	}
 }
 
 ///
