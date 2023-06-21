@@ -39,7 +39,7 @@ impl StartConfigurationSettings {
 	}
 
 	/// Reads commandline options
-	fn configure(&mut self) -> std::result::Result<(), String> {
+	fn configure(&mut self) -> std::result::Result<(), Box<dyn std::error::Error>> {
 		let mut current_option = String::new();
 
 		// Commandline options. The 1st token is application itself.
@@ -48,15 +48,15 @@ impl StartConfigurationSettings {
 		// Reading tokens
 		for e in args {
 			if e == "--help" || e == "-h" {
-				return Err("show usage".to_string());
+				return Err("show usage".into());
 			}
 			if e == "--version" || e == "-v" {
-				return Err("show version".to_string());
+				return Err("show version".into());
 			}
 			if e.starts_with("--file=") || e.starts_with("-f=") {
 				let (_, value) = util::functions::split_string(&e, "=");
 				if value == "" {
-					return Err("show usage".to_string());
+					return Err("show usage".into());
 				}
 				self.settings_path = value;
 				continue;
@@ -69,7 +69,7 @@ impl StartConfigurationSettings {
 				// Unknown option flag given.
 				current_option.clear();
 				println!("Unknown option {}", e);
-				return Err("show usage".to_string());
+				return Err("show usage".into());
 			}
 
 			if current_option == "--file" || current_option == "-f" {
@@ -85,7 +85,7 @@ impl StartConfigurationSettings {
 
 		if current_option != "" {
 			// No values followed option flag.
-			return Err("show usage".to_string());
+			return Err("show usage".into());
 		}
 
 		// Configuration valid.
@@ -104,14 +104,14 @@ impl StartConfigurationSettings {
 		if result.is_err() {
 			println!("{}", result.err().unwrap());
 			println!("{}", getopt.usage(""));
-			return Err(Box::new(application::errors::ApplicationError::new("")));
+			return Err("".into());
 		}
 		let result = result.unwrap();
 
 		// help
 		if result.opt_present("help") {
 			println!("{}", getopt.usage(""));
-			return Err(Box::new(application::errors::ApplicationError::new("")));
+			return Err("".into());
 		}
 
 		// server
@@ -121,7 +121,7 @@ impl StartConfigurationSettings {
 
 		// task
 		if result.opt_present("task") {
-			self.target_task = result.opt_str("port").unwrap();
+			self.target_task = result.opt_str("task").unwrap();
 		}
 
 		return Ok(());
@@ -151,7 +151,9 @@ fn main() {
 	if result.is_err() {
 		let error = result.err().unwrap();
 		let error_message = error.to_string();
-		if error_message == "show usage" {
+		if error_message == "" {
+			// NOP
+		} else if error_message == "show usage" {
 			usage();
 		} else if error_message == "show version" {
 			version();
@@ -168,13 +170,13 @@ fn main() {
 		println!("[ERROR] {}", result.err().unwrap());
 		return;
 	}
-	let app = result.unwrap();
+	let application = result.unwrap();
 
 	// Task to launch.
 	let requested_task = conf.target_task;
 
 	// アプリケーションを実行します。
-	let result = app.run(&requested_task);
+	let result = application.run(&requested_task);
 	if result.is_err() {
 		println!("[ERROR] {}", result.err().unwrap());
 		return;
